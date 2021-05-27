@@ -221,6 +221,7 @@ def get_detection_dataset_dicts(names, filter_empty=True, min_keypoints=0, propo
     Returns:
         list[dict]: a list of dicts following the standard dataset dict format.
     """
+    # print(names, filter_empty, min_keypoints, proposal_files, '>>>>>>>') # ('light_train',) False 0 None >>>>>>>
     if isinstance(names, str):
         names = [names]
     assert len(names), names
@@ -239,6 +240,7 @@ def get_detection_dataset_dicts(names, filter_empty=True, min_keypoints=0, propo
     dataset_dicts = list(itertools.chain.from_iterable(dataset_dicts))
 
     has_instances = "annotations" in dataset_dicts[0]
+    # print(filter_empty, has_instances, '>>>>>>>>') # False, True
     if filter_empty and has_instances:
         dataset_dicts = filter_images_with_only_crowd_annotations(dataset_dicts)
     if min_keypoints > 0 and has_instances:

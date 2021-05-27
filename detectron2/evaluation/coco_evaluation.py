@@ -109,10 +109,11 @@ class COCOEvaluator(DatasetEvaluator):
             cache_path = os.path.join(output_dir, f"{dataset_name}_coco_format.json")
             self._metadata.json_file = cache_path
             convert_to_coco_json(dataset_name, cache_path)
+            assert False
 
         json_file = PathManager.get_local_path(self._metadata.json_file)
-        with contextlib.redirect_stdout(io.StringIO()):
-            self._coco_api = COCO(json_file)
+        # with contextlib.redirect_stdout(io.StringIO()):
+        self._coco_api = COCO(json_file)
 
         # Test set json files do not contain annotations (evaluation must be
         # performed using the COCO evaluation server).
@@ -133,6 +134,7 @@ class COCOEvaluator(DatasetEvaluator):
                 "instances" that contains :class:`Instances`.
         """
         for input, output in zip(inputs, outputs):
+            # assert input['frame_key']==output['frame_key']
             prediction = {"image_id": input["image_id"]}
 
             if "instances" in output:
@@ -192,7 +194,7 @@ class COCOEvaluator(DatasetEvaluator):
         """
         Evaluate predictions. Fill self._results with the metrics of the tasks.
         """
-        self._logger.info("Preparing results for COCO format ...")
+        print("Preparing results for COCO format ...")
         coco_results = list(itertools.chain(*[x["instances"] for x in predictions]))
         tasks = self._tasks or self._tasks_from_predictions(coco_results)
 
@@ -215,16 +217,16 @@ class COCOEvaluator(DatasetEvaluator):
 
         if self._output_dir:
             file_path = os.path.join(self._output_dir, "coco_instances_results.json")
-            self._logger.info("Saving results to {}".format(file_path))
+            print("Saving results to {}".format(file_path))
             with PathManager.open(file_path, "w") as f:
                 f.write(json.dumps(coco_results))
                 f.flush()
 
         if not self._do_evaluation:
-            self._logger.info("Annotations are not available for evaluation.")
+            print("Annotations are not available for evaluation.")
             return
 
-        self._logger.info(
+        print(
             "Evaluating predictions with {} COCO API...".format(
                 "unofficial" if self._use_fast_impl else "official"
             )

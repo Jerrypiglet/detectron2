@@ -35,7 +35,9 @@ class DetectionCheckpointer(Checkpointer):
 
         if path and isinstance(self.model, DistributedDataParallel):
             logger = logging.getLogger(__name__)
+            print('--------filename', path)
             path = self.path_manager.get_local_path(path)
+            print('--------filename', path)
             has_file = os.path.isfile(path)
             all_has_file = comm.all_gather(has_file)
             if not all_has_file[0]:

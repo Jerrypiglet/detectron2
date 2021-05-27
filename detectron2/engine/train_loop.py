@@ -270,6 +270,7 @@ class SimpleTrainer(TrainerBase):
         """
         If you want to do something with the losses, you can wrap the model.
         """
+        # print(data[0].keys(), '>>>>>>') # dict_keys(['file_name', 'image_id', 'height', 'width', 'image', 'instances']) >>>>>>
         loss_dict = self.model(data)
         if isinstance(loss_dict, torch.Tensor):
             losses = loss_dict
